@@ -9,21 +9,29 @@ llm =  ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",
     google_api_key=st.secrets["GOOGLE_API_KEY"],temperature=0
 )
+
 def check_relevance(user_input):
-    prompt = f"""
-    You are a classifier.
+    if len(user_input.strip()) < 2:
+        return "NO"
 
-    User input: "{user_input}"
+    try:
+        prompt = f"""
+        Classify if this input is relevant to a hiring chatbot.
 
-    Check if this input is relevant to a hiring assistant conversation 
-    (like answering questions, giving details, etc.)
+        Input: "{user_input}"
 
-    Respond ONLY in one word:
-    YES or NO
-    """
+        Answer ONLY YES or NO.
+        """
 
-    response = llm.invoke(prompt).content.strip()
-    return response
+        response = llm.invoke(prompt)
+
+        if response and hasattr(response, "content"):
+            return response.content.strip()
+        else:
+            return "YES"
+
+    except:
+        return "YES"
 
 st.set_page_config(page_title="TalentScout Hiring Assistant", page_icon="🤖")
 
