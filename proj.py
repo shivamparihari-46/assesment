@@ -58,14 +58,17 @@ if st.session_state.step == 0 and len(st.session_state.messages) == 0:
 user_input = st.chat_input("Type your response...")
 
 if user_input:
-    relevance = check_relevance(user_input)
+    if st.session_state.step <=1:
+        pass
+    else:
+        relevance = check_relevance(user_input)
 
-    if relevance == "NO":
-        st.session_state.messages.append({
-            "role": "assistant",
-            "content": "Sorry, I did not understand your context. Could you please rephrase?"
-        })
-        st.rerun()
+        if relevance == "NO":
+            st.session_state.messages.append({
+                "role": "assistant",
+                "content": "Sorry, I did not understand your context. Could you please rephrase?"
+            })
+            st.rerun()
     if user_input.lower() in ["exit", "bye", "quit"]:
         st.session_state.messages.append({"role": "assistant", "content": "Thank you! We'll get back to you soon."})
         st.stop()
